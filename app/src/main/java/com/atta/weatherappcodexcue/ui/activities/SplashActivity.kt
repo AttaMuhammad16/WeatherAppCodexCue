@@ -1,4 +1,4 @@
-package com.atta.weatherappcodexcue.activities
+package com.atta.weatherappcodexcue.ui.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent

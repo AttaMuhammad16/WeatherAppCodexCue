@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Weather App CodexCue</string>
+    <string name="api_key">24fae27e11efa58cefc237be67ddfd36</string>
+    <string name="api">AIzaSyAfpjPj2_qCM6dgKxVCGOgh1q_VcukaMBs</string>
 </resources>
