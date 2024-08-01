@@ -3,6 +3,7 @@ package com.atta.weatherappcodexcue.adapter
 import android.content.Context
 import android.widget.ArrayAdapter
 import android.widget.Filter
+import android.widget.Toast
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.places.AutocompleteFilter
 import com.google.android.libraries.places.api.model.AutocompletePrediction
@@ -16,12 +17,13 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 
+
 class AutoCompleteAdapter(context: Context, private val placesClient: PlacesClient) : ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line) {
 
-    private val autocompleteFilter = AutocompleteFilter.Builder().setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES).build()
 
     override fun getFilter(): Filter {
         return object : Filter() {
+
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val filterResults = FilterResults()
                 if (constraint != null) {
@@ -45,6 +47,7 @@ class AutoCompleteAdapter(context: Context, private val placesClient: PlacesClie
                     notifyDataSetInvalidated()
                 }
             }
+
         }
     }
 
@@ -55,14 +58,14 @@ class AutoCompleteAdapter(context: Context, private val placesClient: PlacesClie
         val request = com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest.builder().setQuery(query).setSessionToken(token).build()
 
         return suspendCancellableCoroutine { continuation ->
-            val autocompletePredictions = placesClient.findAutocompletePredictions(request).addOnSuccessListener { response ->
-                    continuation.resume(response.autocompletePredictions)
-                }.addOnFailureListener { exception ->
-                    if (exception is ApiException) {
-                        // Handle API error
-                    }
-                    continuation.resumeWithException(exception)
-                }
+            placesClient.findAutocompletePredictions(request).addOnSuccessListener { response ->
+                   continuation.resume(response.autocompletePredictions)
+               }.addOnFailureListener { exception ->
+                   if (exception is ApiException) {
+                       Toast.makeText(context, exception.message.toString(), Toast.LENGTH_SHORT).show()
+                   }
+                   continuation.resumeWithException(exception)
+               }
         }
     }
 }
