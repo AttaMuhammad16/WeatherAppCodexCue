@@ -12,8 +12,11 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -24,6 +27,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.lottie.LottieDrawable
 import com.atta.weatherappcodexcue.R
+import com.atta.weatherappcodexcue.Utils.Utils.animateTextChange
 import com.atta.weatherappcodexcue.Utils.Utils.fetchWeather
 import com.atta.weatherappcodexcue.Utils.Utils.setStatusBarColor
 import com.atta.weatherappcodexcue.adapter.AutoCompleteAdapter
@@ -49,7 +53,11 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+
+
+
 class MainActivity : AppCompatActivity() {
+
     private lateinit var placesClient: PlacesClient
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var adapter: AutoCompleteAdapter
@@ -99,6 +107,10 @@ class MainActivity : AppCompatActivity() {
 
         adapter = AutoCompleteAdapter(this, placesClient)
         binding.etSearch.setAdapter(adapter)
+
+        binding.day.animateTextChange(dayOfWeek)
+        binding.date.animateTextChange(currentDate)
+
 
         // Add text changed listener for search field
         binding.etSearch.addTextChangedListener { editable ->
@@ -152,11 +164,15 @@ class MainActivity : AppCompatActivity() {
             mainViewModel.getPlaceName.collect { placeName ->
                 if (placeName.isNotEmpty()) {
                     try {
+
                         val weather = fetchWeather(placeName, this@MainActivity)
-                        binding.locationNameTv.text = placeName
+
+                        binding.locationNameTv.animateTextChange(placeName)
                         progressDialog.dismiss()
+
                         val temperature = weather.main.temp.toString()
-                        binding.temperatureTv.text = "$temperature ℃"
+                        val newText="$temperature ℃"
+                        binding.temperatureTv.animateTextChange(newText)
 
                         val weatherType = weather.weather[0]
                         when (weatherType.main) {
@@ -164,9 +180,14 @@ class MainActivity : AppCompatActivity() {
                             "Clear" -> binding.lottieAnimationView.setAnimation(R.raw.sunny)
                             "Clouds" -> binding.lottieAnimationView.setAnimation(R.raw.cloudy)
                         }
+
                         binding.lottieAnimationView.repeatCount = LottieDrawable.INFINITE
                         binding.lottieAnimationView.playAnimation()
-                        binding.weatherTypeTv.text = weatherType.description
+                        binding.weatherTypeTv.animateTextChange(weatherType.description)
+
+                        binding.highTemperature.animateTextChange("High Temperature: ${weather.main.temp_max} ℃")
+                        binding.lowTemperature.animateTextChange("Low Temperature: ${weather.main.temp_min} ℃")
+
                     }catch (e:Exception){
                         Toast.makeText(this@MainActivity, e.message.toString(), Toast.LENGTH_LONG).show()
                         progressDialog.dismiss()
@@ -237,5 +258,8 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Unable to get location", Toast.LENGTH_SHORT).show()
         }
     }
+
+
+
 
 }
