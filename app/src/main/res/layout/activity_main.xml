@@ -564,7 +564,7 @@
                                     android:fontFamily="@font/roboto"
                                     android:gravity="center"
                                     android:text="pressure"
-                                    android:textColor="#FFEB3B"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/_15sdp" />
                                 <TextView
                                     android:layout_width="match_parent"
@@ -573,7 +573,7 @@
                                     android:textSize="@dimen/_15sdp"
                                     android:layout_margin="@dimen/_2sdp"
                                     android:fontFamily="@font/baloo_bhai_2_medium"
-                                    android:textColor="#FFEB3B"
+                                    android:textColor="@color/black"
                                     android:layout_height="wrap_content"/>
 
                             </LinearLayout>

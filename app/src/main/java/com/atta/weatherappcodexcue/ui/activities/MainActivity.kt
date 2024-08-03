@@ -36,7 +36,9 @@ import com.atta.weatherappcodexcue.Utils.Utils.animateTextChange
 import com.atta.weatherappcodexcue.Utils.Utils.convertDate
 import com.atta.weatherappcodexcue.Utils.Utils.fadeInFadeOut
 import com.atta.weatherappcodexcue.Utils.Utils.fetchWeather
+import com.atta.weatherappcodexcue.Utils.Utils.formatSunTimes
 import com.atta.weatherappcodexcue.Utils.Utils.getCurrentTimeForOffset
+import com.atta.weatherappcodexcue.Utils.Utils.hideKeyboard
 import com.atta.weatherappcodexcue.Utils.Utils.setStatusBarColor
 import com.atta.weatherappcodexcue.adapter.AutoCompleteAdapter
 import com.atta.weatherappcodexcue.databinding.ActivityMainBinding
@@ -60,8 +62,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
-
+import java.util.TimeZone
 
 
 class MainActivity : AppCompatActivity() {
@@ -73,8 +76,6 @@ class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
     private lateinit var progressDialog: ProgressDialog
-
-
 
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -111,13 +112,6 @@ class MainActivity : AppCompatActivity() {
         binding.etSearch.setAdapter(adapter)
 
 
-//        binding.searchConstraint.animateFromBottomToTop()
-//        binding.locationLinear.animateFromBottomToTop()
-//        binding.temperatureLinear.animateFromBottomToTop()
-//        binding.highLowTempLinear.animateFromBottomToTop()
-//        binding.dateLinear.animateFromBottomToTop()
-
-
 
         // Add text changed listener for search field
 
@@ -134,6 +128,7 @@ class MainActivity : AppCompatActivity() {
             val placeId = predictionsList[position].placeId
             val placeFields = listOf(Place.Field.NAME)
             val request = FetchPlaceRequest.newInstance(placeId, placeFields)
+            binding.etSearch.hideKeyboard()
             placesClient.fetchPlace(request).addOnSuccessListener { response ->
                 val placeName = response.place.name
                 val previousName=mainViewModel.getPlaceName.value
@@ -165,7 +160,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "SimpleDateFormat")
     private fun observeViewModel() {
         lifecycleScope.launch {
             mainViewModel.getPlaceName.collect { placeName ->
@@ -212,10 +207,11 @@ class MainActivity : AppCompatActivity() {
                         binding.weatherConditionAnim.playAnimation()
                         binding.currentTimeIn.animateTextChange("Current time in ${weather.name}")
 
-                        val sunriseTime=convertDate(weather.sys.sunrise.toString(),"hh:mm a")
-                        binding.sunrise.animateTextChange(sunriseTime)
+                        val  sunRise= weather.sys.sunrise
+                        val  sunSet= weather.sys.sunset
+                        val (sunriseTime, sunsetTime) = formatSunTimes(sunRise.toLong(), sunSet.toLong(),weather.timezone)
 
-                        val sunsetTime=convertDate(weather.sys.sunset.toString(),"hh:mm a")
+                        binding.sunrise.animateTextChange(sunriseTime)
                         binding.sunset.animateTextChange(sunsetTime)
 
                         binding.sea.animateTextChange(weather.main.sea_level.toString())
@@ -292,6 +288,5 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Unable to get location", Toast.LENGTH_SHORT).show()
         }
     }
-
 
 }

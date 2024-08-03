@@ -11,6 +11,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -29,6 +30,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 import java.util.Calendar
+import java.util.Date
 import java.util.TimeZone
 
 object Utils {
@@ -115,6 +117,33 @@ object Utils {
 
     fun convertDate(dateInMilliseconds: String, dateFormat: String?): String {
         return DateFormat.format(dateFormat, dateInMilliseconds.toLong()).toString()
+    }
+
+    fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
+    }
+
+
+    @SuppressLint("SimpleDateFormat")
+    fun formatSunTimes(sunrise: Long, sunset: Long, timeZoneOffset: Int): Pair<String, String> {
+        // Convert Unix timestamps to Date objects
+        val sunriseDate = Date(sunrise * 1000)
+        val sunsetDate = Date(sunset * 1000)
+
+        // Create a SimpleDateFormat instance
+        val sdf = SimpleDateFormat("hh:mm a")
+
+        // Calculate the time zone offset in hours and create a TimeZone object
+        val offsetHours = timeZoneOffset / 3600
+        val timeZone = TimeZone.getTimeZone("GMT${if (offsetHours >= 0) "+" else "-"}${Math.abs(offsetHours)}")
+        sdf.timeZone = timeZone
+
+        // Format the dates
+        val sunriseTimeLocal = sdf.format(sunriseDate)
+        val sunsetTimeLocal = sdf.format(sunsetDate)
+
+        return Pair(sunriseTimeLocal, sunsetTimeLocal)
     }
 
 
