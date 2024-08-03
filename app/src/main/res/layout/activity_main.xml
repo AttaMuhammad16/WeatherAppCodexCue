@@ -8,8 +8,8 @@
     android:orientation="vertical"
     android:background="@drawable/vertical_sky_gradient"
     tools:context=".ui.activities.MainActivity">
-
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/searchConstraint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_10sdp">
@@ -47,157 +47,546 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="@dimen/_28sdp"
-            android:layout_height="@dimen/_28sdp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/baseline_location_pin_24" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_8sdp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/locationNameTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:fontFamily="@font/alata"
-                android:text="Location Not found"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_21sdp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="@dimen/_40sdp"
-        tools:ignore="RtlSymmetry">
-
-        <TextView
-            android:id="@+id/temperatureTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="0 ℃"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_35sdp"
-            android:textStyle="bold" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieAnimationView"
-            android:layout_width="@dimen/_60sdp"
-            android:layout_height="@dimen/_60sdp"
-            android:layout_marginStart="@dimen/_40sdp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/sunny" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/weatherTypeTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_45sdp"
-        android:text="null"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_18sdp"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_25sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="@dimen/_51sdp"
-            android:layout_height="@dimen/_51sdp"
-            android:src="@drawable/temperature" />
-
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
             android:orientation="vertical"
-            android:paddingStart="@dimen/_20sdp">
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/locationLinear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/_28sdp"
+                    android:layout_height="@dimen/_28sdp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/baseline_location_pin_24" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/locationNameTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/alata"
+                        android:text="Location Not found"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_21sdp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/temperatureLinear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:paddingStart="@dimen/_40sdp"
+                tools:ignore="RtlSymmetry">
+
+                <TextView
+                    android:id="@+id/temperatureTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="0 ℃"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_35sdp"
+                    android:textStyle="bold" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottieAnimationView"
+                    android:layout_width="@dimen/_60sdp"
+                    android:layout_height="@dimen/_60sdp"
+                    android:layout_marginStart="@dimen/_40sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/sunny" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/high_temperature"
-                android:layout_width="wrap_content"
+                android:id="@+id/weatherTypeTv"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/baloo_bhai_2_medium"
-                android:text="High Temperature: 0 ℃"
-                android:textColor="#F4D168"
-                android:textSize="@dimen/_16sdp" />
-
-            <TextView
-                android:id="@+id/low_temperature"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/baloo_bhai_2_medium"
-                android:text="Low Temperature: 0 ℃"
+                android:layout_marginStart="@dimen/_45sdp"
+                android:text="null"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_16sdp" />
+                android:textSize="@dimen/_18sdp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/dateLinear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/calendar" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/currentTimeIn"
+                        android:layout_width="wrap_content"
+                        android:text="Current time in "
+                        android:fontFamily="@font/baloo_bhai_2_medium"
+                        android:textSize="@dimen/_18sdp"
+                        android:textColor="#253D67"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:fontFamily="@font/baloo_bhai_2_medium"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:text="08/02/2024"
+                        android:textColor="#272845"
+                        android:textSize="@dimen/_18sdp" />
+                </LinearLayout>
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:background="@color/white"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_height="1dp"/>
+            <LinearLayout
+                android:id="@+id/highLowTempLinear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/_51sdp"
+                    android:layout_height="@dimen/_51sdp"
+                    android:src="@drawable/temperature" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/_20sdp">
+
+                    <TextView
+                        android:id="@+id/high_temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/baloo_bhai_2_medium"
+                        android:text="High Temperature: 0 ℃"
+                        android:textColor="#FFEB3B"
+                        android:textSize="@dimen/_16sdp" />
+
+                    <TextView
+                        android:id="@+id/low_temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/baloo_bhai_2_medium"
+                        android:text="Low Temperature: 0 ℃"
+                        android:textColor="#114E87"
+                        android:textSize="@dimen/_16sdp" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_25sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:backgroundTint="#1703A9F4"
+                android:layout_marginBottom="@dimen/_5sdp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="1dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_margin="@dimen/_4sdp"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            app:strokeColor="@color/white"
+                            app:strokeWidth="1dp"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:backgroundTint="#00FFFFFF"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_height="wrap_content">
+                                <com.airbnb.lottie.LottieAnimationView
+                                    android:layout_width="@dimen/_35sdp"
+                                    android:layout_height="@dimen/_35sdp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:lottie_autoPlay="true"
+                                    app:lottie_loop="true"
+                                    app:lottie_rawRes="@raw/humadity" />
+
+                                <TextView
+                                    android:id="@+id/humidityValue"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/roboto"
+                                    android:gravity="center"
+                                    android:text="60"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="@dimen/_15sdp" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:text="Humidity"
+                                    android:gravity="center"
+                                    android:textSize="@dimen/_15sdp"
+                                    android:layout_margin="@dimen/_2sdp"
+                                    android:fontFamily="@font/baloo_bhai_2_medium"
+                                    android:textColor="#FFFFFF"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            app:strokeColor="@color/white"
+                            app:strokeWidth="1dp"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:backgroundTint="#00FFFFFF"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_height="wrap_content">
+                                <com.airbnb.lottie.LottieAnimationView
+                                    android:layout_width="@dimen/_35sdp"
+                                    android:layout_height="@dimen/_35sdp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:lottie_autoPlay="true"
+                                    app:lottie_loop="true"
+                                    app:lottie_rawRes="@raw/wind" />
+                                <TextView
+                                    android:id="@+id/windValue"
+                                    android:layout_width="match_parent"
+                                    android:text="60"
+                                    android:gravity="center"
+                                    android:textSize="@dimen/_15sdp"
+                                    android:textColor="#F1D47D"
+                                    android:fontFamily="@font/roboto"
+                                    android:layout_height="wrap_content"/>
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:text="Wind"
+                                    android:gravity="center"
+                                    android:textSize="@dimen/_15sdp"
+                                    android:layout_margin="@dimen/_2sdp"
+                                    android:textColor="#F1D47D"
+                                    android:fontFamily="@font/baloo_bhai_2_medium"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            app:strokeColor="@color/white"
+                            app:strokeWidth="1dp"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:backgroundTint="#00FFFFFF"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_height="wrap_content">
+                                <com.airbnb.lottie.LottieAnimationView
+                                    android:id="@+id/weatherConditionAnim"
+                                    android:layout_width="@dimen/_35sdp"
+                                    android:layout_height="@dimen/_35sdp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:lottie_autoPlay="true"
+                                    app:lottie_loop="true"
+                                    app:lottie_rawRes="@raw/cloudy" />
+                                <TextView
+                                    android:id="@+id/weatherCondition"
+                                    android:layout_width="match_parent"
+                                    android:text="Clear"
+                                    android:gravity="center"
+                                    android:textSize="@dimen/_15sdp"
+                                    android:textColor="#2196F3"
+                                    android:layout_height="wrap_content"/>
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:text="Condition"
+                                    android:gravity="center"
+                                    android:textSize="@dimen/_15sdp"
+                                    android:layout_margin="@dimen/_2sdp"
+                                    android:fontFamily="@font/baloo_bhai_2_medium"
+
+                                    android:textColor="#2196F3"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            app:strokeColor="@color/white"
+                            app:strokeWidth="1dp"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:backgroundTint="#00FFFFFF"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_height="wrap_content">
+                                <com.airbnb.lottie.LottieAnimationView
+                                    android:layout_width="@dimen/_35sdp"
+                                    android:layout_height="@dimen/_35sdp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:lottie_autoPlay="true"
+                                    app:lottie_loop="true"
+                                    app:lottie_rawRes="@raw/sunrise" />
+
+                                <TextView
+                                    android:id="@+id/sunrise"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/roboto"
+                                    android:gravity="center"
+                                    android:text="5:20 am"
+                                    android:textColor="#FFEB3B"
+                                    android:textSize="@dimen/_15sdp" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:text="Sunrise"
+                                    android:gravity="center"
+                                    android:textSize="@dimen/_15sdp"
+                                    android:layout_margin="@dimen/_2sdp"
+                                    android:fontFamily="@font/baloo_bhai_2_medium"
+                                    android:textColor="#FFEB3B"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            app:strokeColor="@color/white"
+                            app:strokeWidth="1dp"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:backgroundTint="#00FFFFFF"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_height="wrap_content">
+                                <com.airbnb.lottie.LottieAnimationView
+                                    android:layout_width="@dimen/_35sdp"
+                                    android:layout_height="@dimen/_35sdp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:lottie_autoPlay="true"
+                                    app:lottie_loop="true"
+                                    app:lottie_rawRes="@raw/sunrise" />
+
+                                <TextView
+                                    android:id="@+id/sunset"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/roboto"
+                                    android:gravity="center"
+                                    android:text="5:20 am"
+                                    android:textColor="#141935"
+                                    android:textSize="@dimen/_15sdp" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:text="Sunset"
+                                    android:gravity="center"
+                                    android:textSize="@dimen/_15sdp"
+                                    android:layout_margin="@dimen/_2sdp"
+                                    android:fontFamily="@font/baloo_bhai_2_medium"
+                                    android:textColor="#141935"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            app:strokeColor="@color/white"
+                            app:strokeWidth="1dp"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:backgroundTint="#00FFFFFF"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_height="wrap_content">
+                                <com.airbnb.lottie.LottieAnimationView
+                                    android:layout_width="@dimen/_45sdp"
+                                    android:layout_height="@dimen/_35sdp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:lottie_autoPlay="true"
+                                    app:lottie_loop="true"
+                                    app:lottie_rawRes="@raw/sea" />
+
+                                <TextView
+                                    android:id="@+id/sea"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/roboto"
+                                    android:gravity="center"
+                                    android:text="sea"
+                                    android:textColor="#1033F6"
+                                    android:textSize="@dimen/_15sdp" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:text="Sea level"
+                                    android:gravity="center"
+                                    android:textSize="@dimen/_15sdp"
+                                    android:layout_margin="@dimen/_2sdp"
+                                    android:fontFamily="@font/baloo_bhai_2_medium"
+                                    android:textColor="#1033F6"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            app:strokeColor="@color/white"
+                            app:strokeWidth="1dp"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:backgroundTint="#00FFFFFF"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_height="wrap_content">
+                                <com.airbnb.lottie.LottieAnimationView
+                                    android:layout_width="@dimen/_35sdp"
+                                    android:layout_height="@dimen/_35sdp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:lottie_autoPlay="true"
+                                    app:lottie_loop="true"
+                                    app:lottie_rawRes="@raw/pressure" />
+
+                                <TextView
+                                    android:id="@+id/pressure"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/roboto"
+                                    android:gravity="center"
+                                    android:text="pressure"
+                                    android:textColor="#FFEB3B"
+                                    android:textSize="@dimen/_15sdp" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:text="Pressure"
+                                    android:gravity="center"
+                                    android:textSize="@dimen/_15sdp"
+                                    android:layout_margin="@dimen/_2sdp"
+                                    android:fontFamily="@font/baloo_bhai_2_medium"
+                                    android:textColor="#FFEB3B"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="@dimen/_45sdp"
-            android:layout_height="@dimen/_45sdp"
-            android:layout_marginStart="@dimen/_10sdp"
-            android:src="@drawable/calendar" />
-
-        <TextView
-            android:id="@+id/day"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:layout_marginStart="@dimen/_15sdp"
-            android:fontFamily="@font/baloo_bhai_2_medium"
-            android:text="Friday"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_18sdp" />
-
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:layout_marginStart="@dimen/_8sdp"
-            android:fontFamily="@font/baloo_bhai_2_medium"
-            android:text="08/02/2024"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_18sdp" />
-
-    </LinearLayout>
-
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

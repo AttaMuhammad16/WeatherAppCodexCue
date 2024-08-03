@@ -11,6 +11,7 @@ import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -56,7 +57,6 @@ class AutoCompleteAdapter(context: Context, private val placesClient: PlacesClie
     suspend fun getAutocompletePredictions(query: String): List<AutocompletePrediction> {
         val token = AutocompleteSessionToken.newInstance()
         val request = com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest.builder().setQuery(query).setSessionToken(token).build()
-
         return suspendCancellableCoroutine { continuation ->
             placesClient.findAutocompletePredictions(request).addOnSuccessListener { response ->
                    continuation.resume(response.autocompletePredictions)

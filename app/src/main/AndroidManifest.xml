@@ -29,7 +29,9 @@
 
         <activity
             android:name=".ui.activities.MainActivity"
-            android:exported="false"/>
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
 
         <meta-data
             android:name="preloaded_fonts"

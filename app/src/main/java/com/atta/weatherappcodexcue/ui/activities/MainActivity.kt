@@ -1,11 +1,13 @@
 package com.atta.weatherappcodexcue.ui.activities
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Intent
 import android.location.Geocoder
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.Editable
@@ -14,12 +16,14 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.location.LocationManagerCompat.getCurrentLocation
@@ -27,8 +31,12 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.lottie.LottieDrawable
 import com.atta.weatherappcodexcue.R
+import com.atta.weatherappcodexcue.Utils.Utils.animateFromBottomToTop
 import com.atta.weatherappcodexcue.Utils.Utils.animateTextChange
+import com.atta.weatherappcodexcue.Utils.Utils.convertDate
+import com.atta.weatherappcodexcue.Utils.Utils.fadeInFadeOut
 import com.atta.weatherappcodexcue.Utils.Utils.fetchWeather
+import com.atta.weatherappcodexcue.Utils.Utils.getCurrentTimeForOffset
 import com.atta.weatherappcodexcue.Utils.Utils.setStatusBarColor
 import com.atta.weatherappcodexcue.adapter.AutoCompleteAdapter
 import com.atta.weatherappcodexcue.databinding.ActivityMainBinding
@@ -66,13 +74,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var progressDialog: ProgressDialog
 
-    val calendar = Calendar.getInstance()
-    @SuppressLint("SimpleDateFormat")
-    val dayFormat = SimpleDateFormat("EEEE")
-    val dayOfWeek: String = dayFormat.format(calendar.time)
-    @SuppressLint("SimpleDateFormat")
-    val dateFormat = SimpleDateFormat("dd/MM/yyyy")
-    val currentDate: String = dateFormat.format(calendar.time)
 
 
     private val locationPermissionRequest = registerForActivityResult(
@@ -91,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,11 +110,17 @@ class MainActivity : AppCompatActivity() {
         adapter = AutoCompleteAdapter(this, placesClient)
         binding.etSearch.setAdapter(adapter)
 
-        binding.day.animateTextChange(dayOfWeek)
-        binding.date.animateTextChange(currentDate)
+
+//        binding.searchConstraint.animateFromBottomToTop()
+//        binding.locationLinear.animateFromBottomToTop()
+//        binding.temperatureLinear.animateFromBottomToTop()
+//        binding.highLowTempLinear.animateFromBottomToTop()
+//        binding.dateLinear.animateFromBottomToTop()
+
 
 
         // Add text changed listener for search field
+
         binding.etSearch.addTextChangedListener { editable ->
             if (editable.isNullOrEmpty()) {
                 binding.crossIcon.visibility = View.GONE
@@ -153,11 +161,10 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
         )
-
         observeViewModel()
-
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     private fun observeViewModel() {
         lifecycleScope.launch {
@@ -175,10 +182,15 @@ class MainActivity : AppCompatActivity() {
                         binding.temperatureTv.animateTextChange(newText)
 
                         val weatherType = weather.weather[0]
+                        var anim=0
                         when (weatherType.main) {
-                            "Rain" -> binding.lottieAnimationView.setAnimation(R.raw.rainy)
-                            "Clear" -> binding.lottieAnimationView.setAnimation(R.raw.sunny)
-                            "Clouds" -> binding.lottieAnimationView.setAnimation(R.raw.cloudy)
+                            "Rain" -> anim=R.raw.rainy
+                            "Clear" -> anim=R.raw.sunny
+                            "Clouds" -> anim=R.raw.cloudy
+                        }
+
+                        if (anim!=0){
+                            binding.lottieAnimationView.setAnimation(anim)
                         }
 
                         binding.lottieAnimationView.repeatCount = LottieDrawable.INFINITE
@@ -187,6 +199,27 @@ class MainActivity : AppCompatActivity() {
 
                         binding.highTemperature.animateTextChange("High Temperature: ${weather.main.temp_max} ℃")
                         binding.lowTemperature.animateTextChange("Low Temperature: ${weather.main.temp_min} ℃")
+
+                        val currentTime=getCurrentTimeForOffset(weather.timezone)
+                        binding.date.animateTextChange(currentTime)
+
+                        binding.humidityValue.animateTextChange(weather.main.humidity.toString())
+                        binding.windValue.animateTextChange( weather.wind.speed.toString())
+                        binding.weatherCondition.animateTextChange(weatherType.main)
+
+                        binding.weatherConditionAnim.setAnimation(anim)
+                        binding.weatherConditionAnim.repeatCount = LottieDrawable.INFINITE
+                        binding.weatherConditionAnim.playAnimation()
+                        binding.currentTimeIn.animateTextChange("Current time in ${weather.name}")
+
+                        val sunriseTime=convertDate(weather.sys.sunrise.toString(),"hh:mm a")
+                        binding.sunrise.animateTextChange(sunriseTime)
+
+                        val sunsetTime=convertDate(weather.sys.sunset.toString(),"hh:mm a")
+                        binding.sunset.animateTextChange(sunsetTime)
+
+                        binding.sea.animateTextChange(weather.main.sea_level.toString())
+                        binding.pressure.animateTextChange(weather.main.pressure.toString())
 
                     }catch (e:Exception){
                         Toast.makeText(this@MainActivity, e.message.toString(), Toast.LENGTH_LONG).show()
@@ -206,6 +239,7 @@ class MainActivity : AppCompatActivity() {
             adapter.addAll(predictionsList.map { it.getFullText(null).toString() })
         }
     }
+
 
     private fun checkLocationSettings() {
         val locationRequest = LocationRequest.Builder(PRIORITY_HIGH_ACCURACY, 10000L).build()
@@ -258,8 +292,6 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Unable to get location", Toast.LENGTH_SHORT).show()
         }
     }
-
-
 
 
 }
