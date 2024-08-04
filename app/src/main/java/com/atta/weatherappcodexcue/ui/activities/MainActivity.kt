@@ -177,21 +177,24 @@ class MainActivity : AppCompatActivity() {
                         binding.temperatureTv.animateTextChange(newText)
 
                         val weatherType = weather.weather[0]
-                        var anim=0
-                        when (weatherType.main) {
-                            "Rain" -> anim=R.raw.rainy
-                            "Clear" -> anim=R.raw.sunny
-                            "Clouds" -> anim=R.raw.cloudy
+                        var anim=-19273
+                        anim = when (weatherType.main) {
+                            "Rain" -> R.raw.rainy
+                            "Clear" -> R.raw.sunny
+                            "Clouds" -> R.raw.cloudy
+                            "Smoke" -> R.raw.cloudy
+                            else->{
+                                R.raw.cloudy
+                            }
                         }
 
-                        if (anim!=0){
+                        if (anim!=-19273){
                             binding.lottieAnimationView.setAnimation(anim)
+                            binding.lottieAnimationView.repeatCount = LottieDrawable.INFINITE
+                            binding.lottieAnimationView.playAnimation()
                         }
 
-                        binding.lottieAnimationView.repeatCount = LottieDrawable.INFINITE
-                        binding.lottieAnimationView.playAnimation()
                         binding.weatherTypeTv.animateTextChange(weatherType.description)
-
                         binding.highTemperature.animateTextChange("High Temperature: ${weather.main.temp_max} ℃")
                         binding.lowTemperature.animateTextChange("Low Temperature: ${weather.main.temp_min} ℃")
 
